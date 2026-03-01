@@ -154,14 +154,12 @@ def _encode_ndef_uri(uri: str) -> bytes:
     uri_bytes = uri.encode("utf-8")
     # NDEF URI record: TNF=0x01 (Well-Known), type="U", payload=[0x00]+uri
     payload = bytes([0x00]) + uri_bytes
-    record = bytes(
-        [
-            0xD1,  # MB=1, ME=1, SR=1, TNF=0x01 (Well-Known)
-            0x01,  # Type length = 1
-            len(payload),  # Payload length
-            0x55,  # Type "U" (URI)
-            *payload,
-        ]
-    )
+    record = bytes([
+        0xD1,  # MB=1, ME=1, SR=1, TNF=0x01 (Well-Known)
+        0x01,  # Type length = 1
+        len(payload),  # Payload length
+        0x55,  # Type "U" (URI)
+        *payload,
+    ])
     # Wrap in TLV: T=0x03 (NDEF), L=length, V=record, T=0xFE (terminator)
     return bytes([0x03, len(record)]) + record + bytes([0xFE])

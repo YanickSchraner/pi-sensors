@@ -91,7 +91,7 @@ def test_level_is_monotone() -> None:
 
 def test_rms_to_level_round_trip() -> None:
     """Full-scale sine RMS → dB → level should be close to 1.0."""
-    rms = 1.0 / math.sqrt(2)   # Full-scale sine
+    rms = 1.0 / math.sqrt(2)  # Full-scale sine
     db = _rms_to_db(rms)
     level = _db_to_level(db)
     # ≈ −3 dBFS → level ≈ 0.95

@@ -34,7 +34,7 @@ def _maybe_stub(name: str) -> bool:
     try:
         __import__(name)
         return True
-    except Exception:  # noqa: BLE001
+    except Exception:
         mod = MagicMock()
         mod.__name__ = name
         sys.modules[name] = mod
@@ -47,10 +47,10 @@ def _maybe_stub(name: str) -> bool:
 # find the stub in sys.modules instead of raising ImportError.
 _HW_AVAILABLE: dict[str, bool] = {
     "adafruit_bme680": _maybe_stub("adafruit_bme680"),
-    "board":           _maybe_stub("board"),
-    "qwiic_pir":       _maybe_stub("qwiic_pir"),
-    "smbus2":          _maybe_stub("smbus2"),
-    "sounddevice":     _maybe_stub("sounddevice"),
+    "board": _maybe_stub("board"),
+    "qwiic_pir": _maybe_stub("qwiic_pir"),
+    "smbus2": _maybe_stub("smbus2"),
+    "sounddevice": _maybe_stub("sounddevice"),
 }
 
 # Convenience flag: True only when *all* sensor libraries are present.

@@ -11,8 +11,6 @@ properly cancelled via an anyio cancel scope rather than hanging indefinitely.
 
 from __future__ import annotations
 
-import json
-
 import anyio
 import httpx
 import pytest
@@ -254,9 +252,7 @@ def test_nfc_raw_hex_length(client: TestClient, mock_state: SensorState) -> None
 
 
 def test_nfc_rf_on(client: TestClient, mock_state: SensorState) -> None:
-    mock_state.nfc = NFCReading(
-        raw_bytes=b"Hello NFC\x00" * 3 + b"\x00" * 2, rf_field_present=True
-    )
+    mock_state.nfc = NFCReading(raw_bytes=b"Hello NFC\x00" * 3 + b"\x00" * 2, rf_field_present=True)
     body = client.get("/api/sensors/nfc").json()
     assert body["rf_field_present"] is True
     assert "Hello NFC" in body["text"]

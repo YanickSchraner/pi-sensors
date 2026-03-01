@@ -195,7 +195,7 @@ def _nfc_thread(stop: threading.Event, interval: float) -> None:
     tag.close()
 
 
-def _audio_thread(stop: threading.Event, _interval: float) -> None:  # noqa: ANN001
+def _audio_thread(stop: threading.Event, _interval: float) -> None:
     try:
         import numpy as np
         import sounddevice as sd

@@ -48,16 +48,13 @@ def test_nine_zones(reading: DTOFReading) -> None:
 
 def test_at_least_one_zone_has_target(reading: DTOFReading) -> None:
     """In any room, at least one zone must detect a surface."""
-    assert any(d > 0 for d in reading.distances_mm), (
-        f"All zones returned no-target (-1): {reading.distances_mm}"
-    )
+    assert any(d > 0 for d in reading.distances_mm), f"All zones returned no-target (-1): {reading.distances_mm}"
 
 
 def test_distances_in_room_range(reading: DTOFReading) -> None:
     for i, d in enumerate(reading.distances_mm):
         assert d == -1 or _ROOM_MIN_MM <= d <= _ROOM_MAX_MM, (
-            f"Zone {i}: distance {d} mm is outside plausible room range "
-            f"({_ROOM_MIN_MM}–{_ROOM_MAX_MM} mm)"
+            f"Zone {i}: distance {d} mm is outside plausible room range ({_ROOM_MIN_MM}–{_ROOM_MAX_MM} mm)"
         )
 
 

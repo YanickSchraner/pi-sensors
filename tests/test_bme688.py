@@ -57,8 +57,7 @@ def test_sensor_connects(sensor: BME688Sensor) -> None:
 
 def test_temperature_in_room_range(reading: BME688Reading) -> None:
     assert _TEMP_MIN_C <= reading.temperature_c <= _TEMP_MAX_C, (
-        f"Temperature {reading.temperature_c:.1f}°C outside plausible room range "
-        f"({_TEMP_MIN_C}–{_TEMP_MAX_C}°C)"
+        f"Temperature {reading.temperature_c:.1f}°C outside plausible room range ({_TEMP_MIN_C}–{_TEMP_MAX_C}°C)"
     )
 
 
@@ -69,29 +68,25 @@ def test_temperature_f_matches_c(reading: BME688Reading) -> None:
 
 def test_humidity_in_room_range(reading: BME688Reading) -> None:
     assert _HUM_MIN <= reading.humidity_rh <= _HUM_MAX, (
-        f"Humidity {reading.humidity_rh:.1f}% outside plausible apartment range "
-        f"({_HUM_MIN}–{_HUM_MAX}%)"
+        f"Humidity {reading.humidity_rh:.1f}% outside plausible apartment range ({_HUM_MIN}–{_HUM_MAX}%)"
     )
 
 
 def test_pressure_in_range(reading: BME688Reading) -> None:
     assert _PRES_MIN_HPA <= reading.pressure_hpa <= _PRES_MAX_HPA, (
-        f"Pressure {reading.pressure_hpa:.1f} hPa outside plausible range "
-        f"({_PRES_MIN_HPA}–{_PRES_MAX_HPA} hPa)"
+        f"Pressure {reading.pressure_hpa:.1f} hPa outside plausible range ({_PRES_MIN_HPA}–{_PRES_MAX_HPA} hPa)"
     )
 
 
 def test_gas_resistance_positive(reading: BME688Reading) -> None:
     assert reading.gas_resistance_ohm > 0, (
-        f"Gas resistance {reading.gas_resistance_ohm:.0f} Ω is not positive "
-        "— sensor may not have warmed up yet"
+        f"Gas resistance {reading.gas_resistance_ohm:.0f} Ω is not positive — sensor may not have warmed up yet"
     )
 
 
 def test_altitude_plausible(reading: BME688Reading) -> None:
     assert _ALT_MIN_M <= reading.altitude_m <= _ALT_MAX_M, (
-        f"Altitude {reading.altitude_m:.1f} m outside plausible range "
-        f"({_ALT_MIN_M}–{_ALT_MAX_M} m)"
+        f"Altitude {reading.altitude_m:.1f} m outside plausible range ({_ALT_MIN_M}–{_ALT_MAX_M} m)"
     )
 
 

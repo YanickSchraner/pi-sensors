@@ -67,9 +67,9 @@ def test_context_manager() -> None:
 
 def test_encode_ndef_uri_structure() -> None:
     encoded = _encode_ndef_uri("https://www.raspberrypi.com")
-    assert encoded[0] == 0x03    # TLV type = NDEF message
-    assert encoded[-1] == 0xFE   # TLV terminator
-    assert 0xD1 in encoded       # NDEF header byte (MB=1, ME=1, SR=1, TNF=0x01)
+    assert encoded[0] == 0x03  # TLV type = NDEF message
+    assert encoded[-1] == 0xFE  # TLV terminator
+    assert 0xD1 in encoded  # NDEF header byte (MB=1, ME=1, SR=1, TNF=0x01)
 
 
 def test_encode_ndef_uri_contains_uri() -> None:

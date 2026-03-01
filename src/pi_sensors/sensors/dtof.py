@@ -138,10 +138,7 @@ class DTOFSensor:
         # Verify device ID
         dev_id = self._read_byte(_REG_ID)
         if dev_id != _DEVICE_ID_TMF882X:
-            msg = (
-                f"Unexpected TMF882x device ID: 0x{dev_id:02X} "
-                f"(expected 0x{_DEVICE_ID_TMF882X:02X})"
-            )
+            msg = f"Unexpected TMF882x device ID: 0x{dev_id:02X} (expected 0x{_DEVICE_ID_TMF882X:02X})"
             raise OSError(msg)
 
         # Enable interrupt for measurement results
