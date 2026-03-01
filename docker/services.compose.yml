@@ -1,0 +1,44 @@
+services:
+  pi-sensors-backend:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: pi-sensors-backend
+    container_name: pi-sensors-backend
+    # Grant access to I2C and audio hardware on the Pi
+    devices:
+      - /dev/i2c-1:/dev/i2c-1
+    device_cgroup_rules:
+      - "c 116:* rmw"  # ALSA/sound devices
+    group_add:
+      - "i2c"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import http.client; conn = http.client.HTTPConnection(\"localhost\", 8000); conn.request(\"GET\", \"/health\"); r = conn.getresponse(); exit(0 if r.status == 200 else 1)'"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - web_proxy
+
+  pi-sensors-frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    image: pi-sensors-frontend
+    container_name: pi-sensors-frontend
+    depends_on:
+      pi-sensors-backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks:
+      - web_proxy
+
+networks:
+  web_proxy:
+    external: true

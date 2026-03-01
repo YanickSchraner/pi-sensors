@@ -1,0 +1,21 @@
+services:
+  pi-sensors-backend:
+    extends:
+      file: docker/services.compose.yml
+      service: pi-sensors-backend
+    restart: unless-stopped
+
+  pi-sensors-frontend:
+    extends:
+      file: docker/services.compose.yml
+      service: pi-sensors-frontend
+    restart: unless-stopped
+    environment:
+      # SSR inside Docker reaches backend via container name on web_proxy network
+      NUXT_API_BASE_INTERNAL: http://pi-sensors-backend:8000/api
+      # Browser URL — handled by Caddy reverse proxy
+      NUXT_PUBLIC_API_BASE: /api
+
+networks:
+  web_proxy:
+    external: true
