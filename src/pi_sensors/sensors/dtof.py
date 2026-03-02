@@ -34,7 +34,7 @@ _REG_FACTORY_CAL_CFG = 0x20
 _ENABLE_PON = 0x01  # Power-on
 _ENABLE_WAKEUP = 0x02  # Wake from standby
 _CMD_LOAD_CONFIG = 0x08
-_CMD_START = 0x10  # MEASURE command (0x02 is factory-calibration write)
+_CMD_START = 0x02  # Start continuous measurement (0x10 = write config page — wrong)
 _CMD_STOP = 0xFF
 _STAT_OK = 0x00
 _CONTENTS_MEAS = 0x10  # measurement result contents ID
