@@ -88,14 +88,16 @@ class NFCTag:
 
     def read(self, length: int = 64) -> NFCReading:
         """Read *length* bytes from user memory starting at address 0."""
-        assert self._bus is not None, "Call open() first"
+        if self._bus is None:
+            raise RuntimeError("Call open() first")
         raw = self._read_user(0x0000, length)
         rf_present = self._rf_field_detected()
         return NFCReading(raw_bytes=bytes(raw), rf_field_present=rf_present)
 
     def write_text(self, text: str, memory_address: int = 0x0000) -> None:
         """Write a plain-text payload to user memory (max 2048 bytes for ST25DV16K)."""
-        assert self._bus is not None, "Call open() first"
+        if self._bus is None:
+            raise RuntimeError("Call open() first")
         payload = text.encode("utf-8")
         self._write_user(memory_address, list(payload))
 
@@ -105,7 +107,8 @@ class NFCTag:
 
         The payload is written as an NDEF Type 2 Tag message starting at byte 0.
         """
-        assert self._bus is not None, "Call open() first"
+        if self._bus is None:
+            raise RuntimeError("Call open() first")
         ndef = _encode_ndef_uri(uri)
         self._write_user(0x0000, list(ndef))
 
@@ -115,7 +118,8 @@ class NFCTag:
 
     def _read_user(self, address: int, length: int) -> list[int]:
         """Read *length* bytes from user memory at 16-bit *address*."""
-        assert self._bus is not None
+        if self._bus is None:
+            raise RuntimeError("Call open() first")
         addr_high = (address >> 8) & 0xFF
         addr_low = address & 0xFF
         write_msg = smbus2.i2c_msg.write(self._addr_user, [addr_high, addr_low])
@@ -125,7 +129,8 @@ class NFCTag:
 
     def _write_user(self, address: int, data: list[int]) -> None:
         """Write *data* bytes to user memory at 16-bit *address* (5 ms write delay per page)."""
-        assert self._bus is not None
+        if self._bus is None:
+            raise RuntimeError("Call open() first")
         import time
 
         chunk_size = 4  # ST25DV page size
@@ -139,13 +144,14 @@ class NFCTag:
 
     def _rf_field_detected(self) -> bool:
         """Return True if the NFC field-detection bit is set."""
-        assert self._bus is not None
+        if self._bus is None:
+            raise RuntimeError("Call open() first")
         addr_high = (_REG_IT_STS_DYN >> 8) & 0xFF
         addr_low = _REG_IT_STS_DYN & 0xFF
         write_msg = smbus2.i2c_msg.write(self._addr_user, [addr_high, addr_low])
         read_msg = smbus2.i2c_msg.read(self._addr_user, 1)
         self._bus.i2c_rdwr(write_msg, read_msg)
-        status = list(read_msg)[0]  # type: ignore[arg-type]  # smbus2 i2c_msg is iterable
+        status = next(iter(read_msg))  # type: ignore[arg-type]  # smbus2 i2c_msg is iterable
         return bool(status & 0x01)
 
 

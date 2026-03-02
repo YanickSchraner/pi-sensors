@@ -10,9 +10,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-import adafruit_bme680
-import board
-
 
 @dataclass(frozen=True)
 class BME688Reading:
@@ -22,7 +19,7 @@ class BME688Reading:
     """Ambient temperature in degrees Celsius."""
 
     humidity_rh: float
-    """Relative humidity in percent (0–100)."""
+    """Relative humidity in percent (0-100)."""
 
     pressure_hpa: float
     """Barometric pressure in hecto-Pascals."""
@@ -65,6 +62,9 @@ class BME688Sensor:
         address: int = 0x77,
         sea_level_pressure_hpa: float = 1013.25,
     ) -> None:
+        import adafruit_bme680
+        import board
+
         i2c = board.I2C()
         self._sensor = adafruit_bme680.Adafruit_BME680_I2C(i2c, address=address)
         self._sensor.sea_level_pressure = sea_level_pressure_hpa

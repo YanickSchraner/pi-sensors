@@ -5,7 +5,7 @@ Hardware: SparkFun Qwiic dToF Imager (TMF8820) — direct Time-of-Flight
 Address:  0x41 (default)
 Protocol: I2C via smbus2 (no dedicated Python package available)
 
-The TMF8820 is an indirect time-of-flight sensor with a 3×3 zone SPAD array.
+The TMF8820 is an indirect time-of-flight sensor with a 3x3 zone SPAD array.
 This wrapper implements the minimal register-level protocol to:
   1. Boot the device from ROM
   2. Load the default measurement application
@@ -40,7 +40,7 @@ _STAT_OK = 0x00
 _CONTENTS_MEAS = 0x10  # measurement result contents ID
 
 _DEVICE_ID_TMF882X = 0x08
-_NUM_ZONES = 9  # 3×3 SPAD map
+_NUM_ZONES = 9  # 3x3 SPAD map
 _MAX_DISTANCE_MM = 5000  # TMF8820 rated maximum range
 
 
@@ -52,7 +52,7 @@ class DTOFReading:
     """Distance in millimetres per zone (left-to-right, top-to-bottom). -1 = no target."""
 
     confidences: list[int] = field(default_factory=list)
-    """Confidence value per zone (0–255)."""
+    """Confidence value per zone (0-255)."""
 
     @property
     def center_distance_mm(self) -> int:
@@ -111,7 +111,8 @@ class DTOFSensor:
 
     def read(self) -> DTOFReading:
         """Return distance measurements from one measurement cycle."""
-        assert self._bus is not None, "Call open() first"
+        if self._bus is None:
+            raise RuntimeError("Call open() first")
 
         # Wait for measurement result register to be populated
         deadline = time.monotonic() + 0.5
@@ -129,7 +130,8 @@ class DTOFSensor:
 
     def _boot(self) -> None:
         """Power-on sequence: wake, verify ID, start measurement app."""
-        assert self._bus is not None
+        if self._bus is None:
+            raise RuntimeError("Call open() first")
 
         # Wake up
         self._write_byte(_REG_ENABLE, _ENABLE_PON | _ENABLE_WAKEUP)
@@ -152,14 +154,15 @@ class DTOFSensor:
         """Read the 132-byte result block and extract zone distances.
 
         Block layout (TMF882x application firmware):
-          Bytes  0–19  Header — result_num[0], reserved[1], num_valid[2],
+          Bytes  0-19  Header — result_num[0], reserved[1], num_valid[2],
                         reserved[3], ambient[4:8], photon_count[8:12],
                         ref_count[12:16], sys_tick[16:20]
           Bytes 20+    Object entries, 4 bytes each:
                         [confidence(1B), dist_lo(1B), dist_hi(1B), channel(1B)]
-                        channel & 0x0F = zone index (0–8 for 3×3 SPAD map)
+                        channel & 0x0F = zone index (0-8 for 3x3 SPAD map)
         """
-        assert self._bus is not None
+        if self._bus is None:
+            raise RuntimeError("Call open() first")
 
         # Result block starts at register 0x20, length 132 bytes.
         # read_i2c_block_data is capped at 32 bytes by SMBus; use raw i2c_rdwr instead.
@@ -192,9 +195,11 @@ class DTOFSensor:
         return DTOFReading(distances_mm=distances, confidences=confidences)
 
     def _read_byte(self, register: int) -> int:
-        assert self._bus is not None
+        if self._bus is None:
+            raise RuntimeError("Call open() first")
         return int(self._bus.read_byte_data(self._address, register))
 
     def _write_byte(self, register: int, value: int) -> None:
-        assert self._bus is not None
+        if self._bus is None:
+            raise RuntimeError("Call open() first")
         self._bus.write_byte_data(self._address, register, value)

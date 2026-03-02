@@ -7,7 +7,7 @@ the latest readings via REST endpoints and a Server-Sent Events stream.
 Sensors:
   - BME688  — temperature, humidity, pressure, air quality (I2C 0x77)
   - PIR     — motion detection (I2C 0x12)
-  - dToF    — 3×3 zone Time-of-Flight distance (I2C 0x41)
+  - dToF    — 3x3 zone Time-of-Flight distance (I2C 0x41)
   - NFC     — RFID tag read / RF field detection (I2C 0x53)
   - Audio   — microphone RMS level via sounddevice
 """
@@ -403,7 +403,7 @@ async def get_motion() -> dict:  # type: ignore[type-arg]
 
 @app.get(f"{router_prefix}/sensors/distance")
 async def get_distance() -> dict:  # type: ignore[type-arg]
-    """dToF Time-of-Flight 3×3 zone distance readings."""
+    """dToF Time-of-Flight 3x3 zone distance readings."""
     with _state.lock:
         dtof = _state.dtof
         err = _state.dtof_error
